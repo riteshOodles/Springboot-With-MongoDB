@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.mongoExample.model.Student;
+import com.mongoExample.repo.StudentCriteria;
 import com.mongoExample.repo.StudentRepo;
 import com.mongoExample.services.StudentServices;
 
@@ -17,17 +18,36 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class StudentServicesImpl implements StudentServices {
     final private StudentRepo studentRepo;
+    final private StudentCriteria studentCriteria;
 
     /**
      * @param id of the student
      * @return an Optional<Student> if present else an empty Optional
      */
-    public Optional<Student> findStudentById(int id) {
+    public Optional<Student> findStudentById(String id) {
         try {
             return studentRepo.findById(id);
         } catch (Exception e) {
             log.error(e.getMessage());
             return Optional.empty();
+        }
+    }
+
+    public Optional<Student> findStudentByRollNo(int rollNo) {
+        try {
+            return studentRepo.findByRollNo(rollNo);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return Optional.empty();
+        }
+    }
+
+    public List<Student> findByProject(String projectName) {
+        try {
+            return studentCriteria.findByProject(projectName);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return List.of();
         }
     }
 
@@ -64,7 +84,7 @@ public class StudentServicesImpl implements StudentServices {
         }
     }
 
-    public boolean deleteById(int id) {
+    public boolean deleteById(String id) {
         try {
             studentRepo.deleteById(id);
             return true;

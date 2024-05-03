@@ -1,10 +1,5 @@
 package com.mongoExample.controller;
 
-import org.springframework.web.bind.annotation.RestController;
-
-import com.mongoExample.model.Student;
-import com.mongoExample.services.impl.StudentServicesImpl;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -18,9 +13,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.mongoExample.model.Student;
+import com.mongoExample.services.impl.StudentServicesImpl;
 
 @RestController
-@RequestMapping("/student")
+@RequestMapping("/students")
 public class StudentController {
     @Autowired
     private StudentServicesImpl studentServices;
@@ -36,8 +35,8 @@ public class StudentController {
 
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Student> getStudentById(@PathVariable int id) {
+    @GetMapping("/id/{id}")
+    public ResponseEntity<Student> getStudentById(@PathVariable String id) {
         Optional<Student> studentOptional = studentServices.findStudentById(id);
         if (studentOptional.isPresent()) {
             return ResponseEntity.ok(studentOptional.get());
@@ -46,13 +45,28 @@ public class StudentController {
         }
     }
 
+    @GetMapping("/roll/{rollNo}")
+    public ResponseEntity<Student> getStudentByroll(@PathVariable int rollNo) {
+        Optional<Student> studentOptional = studentServices.findStudentByRollNo(rollNo);
+        if (studentOptional.isPresent()) {
+            return ResponseEntity.ok(studentOptional.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/project/{projectName}")
+    public ResponseEntity<List<Student>> getStudentByProject(@PathVariable String projectName) {
+        return ResponseEntity.ok(studentServices.findByProject(projectName));
+    }
+
     @GetMapping
     public ResponseEntity<List<Student>> getAllStudents() {
         return ResponseEntity.ok(studentServices.findAllStudent());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteById(@PathVariable int id) {
+    @DeleteMapping("/id/{id}")
+    public ResponseEntity<String> deleteById(@PathVariable String id) {
         boolean isDeleted = studentServices.deleteById(id);
         if (isDeleted) {
             return ResponseEntity.ok("Student removed having id = " + id);
