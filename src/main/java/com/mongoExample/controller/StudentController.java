@@ -35,6 +35,10 @@ public class StudentController {
 
     }
 
+    /**
+     * @param id
+     * @return A student having specific id. If student not found then 
+     */
     @GetMapping("/id/{id}")
     public ResponseEntity<Student> getStudentById(@PathVariable String id) {
         Optional<Student> studentOptional = studentServices.findStudentById(id);
